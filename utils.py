@@ -47,6 +47,8 @@ class Piece:
                             if type(board[j + str(8 - self.position[1])]) != None:
                                 if board[j + str(8 - self.position[1])].color == self.color:
                                     fine = False
+                                elif board[j + str(8 - self.position[1])] != board[pos]:
+                                    fine = False
                         return fine
                     else:
                         fine = True
@@ -54,6 +56,8 @@ class Piece:
                             j = alphas[i]
                             if type(board[j + str(8 - self.position[1])]) != None:
                                 if board[j + str(8 - self.position[1])].color == self.color:
+                                    fine = False
+                                elif board[j + str(8 - self.position[1])] != board[pos]:
                                     fine = False
                         return fine
                 if y != self.position[1]:
@@ -64,6 +68,8 @@ class Piece:
                             if type(board[j + str(i)]) != None:
                                 if board[j + str(i)].color == self.color:
                                     fine = False
+                                elif board[j + str(i)] != board[pos]:
+                                    fine = False
                         return fine
                     else:
                         fine = True
@@ -71,6 +77,8 @@ class Piece:
                             j = alphas[x]
                             if type(board[j + str(i)]) != None:
                                 if board[j + str(i)].color == self.color:
+                                    fine = False
+                                elif board[j + str(i)] != board[pos]:
                                     fine = False
                         return fine
         if self.unit == "B":
@@ -91,6 +99,8 @@ class Piece:
                         if isinstance(board[j + str(i)], Piece):
                             if board[j + str(i)].color == self.color:
                                 fine = False
+                            elif board[j + str(i)] != board[pos]:
+                                    fine = False
                 else:
                     x = abs(x - self.position[0])
                     for i in range(y, self.position[1]):
@@ -98,6 +108,8 @@ class Piece:
                         if isinstance(board[j + str(i)], Piece):
                             if board[j + str(i)].color == self.color:
                                 fine = False
+                            elif board[j + str(i)] != board[pos]:
+                                    fine = False
                 return fine
         if self.unit == "N":
             if (x >= 8 or x < 0) or (y >= 8 or y < 0):
@@ -115,11 +127,101 @@ class Piece:
                     return False
             else:
                 return False
-
-            
-
-
-
+        if self.unit == "Q":
+            if (x >= 8 or x < 0) and (y >= 8 or y < 0):
+                return False
+            elif x == self.position[0] and y == 8 - self.position[1]:
+                return False
+            elif x != self.position[0] and y != 8 -self.position[1]:
+                if x == self.position[0] or y == 8 - self.position[1]:
+                    return False
+                elif (x >= 8 or x < 0) or (y >= 8 or y < 0):
+                    return False
+                elif abs(x - self.position[0]) != abs(y - (8-self.position[1])):
+                    return False
+                else:
+                    fine = True
+                    
+                    
+                    if y > 8 - self.position[1]:
+                        x = abs(x - self.position[0])
+                        for i in range(8 - self.position[1], y+ 1):
+                            j = alphas[8-i]
+                            if isinstance(board[j + str(i)], Piece):
+                                if board[j + str(i)].color == self.color:
+                                    fine = False
+                                elif board[j + str(i)] != board[pos]:
+                                    fine = False
+                    else:
+                        x = abs(x - self.position[0])
+                        for i in range(y, self.position[1]):
+                            j = alphas[i]
+                            if isinstance(board[j + str(i)], Piece):
+                                if board[j + str(i)].color == self.color:
+                                    fine = False
+                                elif board[j + str(i)] != board[pos]:
+                                    fine = False
+                    return fine
+            elif x == self.position[0] or y == 8 - self.position[1]:
+                if x != self.position[0]:
+                    if x < self.position[0]:
+                        fine = True
+                        for i in range(self.position[0], x):
+                            j = alphas[i]
+                            if type(board[j + str(8 - self.position[1])]) != None:
+                                if board[j + str(8 - self.position[1])].color == self.color:
+                                    fine = False
+                                elif board[j + str(8 - self.position[1])] != board[pos]:
+                                    fine = False
+                        return fine
+                    else:
+                        fine = True
+                        for i in range(x, self.position[0]):
+                            j = alphas[i]
+                            if type(board[j + str(8 - self.position[1])]) != None:
+                                if board[j + str(8 - self.position[1])].color == self.color:
+                                    fine = False
+                                elif board[j + str(8 - self.position[1])] != board[pos]:
+                                    fine = False
+                        return fine
+                if y != 8 -self.position[1]:
+                    print(y, self.position[1])
+                    if y > self.position[1]:
+                        print("h")
+                        fine = True
+                        for i in range(8 -self.position[1], y):
+                            j = alphas[x]
+                            print(j, i)
+                            if isinstance(board[j + str(i)], Piece) and board[j + str(i)] != self:
+                                print(board[j + str(i)].posToChess())
+                                if board[j + str(i)].color == self.color:
+                                    fine = False
+                                elif board[j + str(i)] != board[pos]:
+                                    fine = False
+                        return fine
+                    else:
+                        fine = True
+                        for i in range(y, self.position[1]):
+                            j = alphas[x]
+                            if isinstance(board[j + str(i)], Piece) and board[j + str(i)] != self:
+                                if board[j + str(i)].color == self.color:
+                                    fine = False
+                                elif board[j + str(i)] != board[pos]:
+                                    fine = False
+                        return fine
+            else:
+                return False
+        if self.unit == "K":
+            if (x >= 8 or x < 0) or (y >= 8 or y < 0):
+                return False
+            elif abs(x - self.position[0]) > 1 or abs((8-y) - (self.position[1])) > 1:
+                return False
+            elif abs(x - self.position[0]) == 0 and abs((8-y) - (self.position[1])) == 0:
+                return False
+            elif (isinstance(board[pos], Piece) and board[pos].color != self.color) or board[pos] == None:
+                return True
+            else:
+                return False
 board = {
     "a8": Piece("a8", 0, "R"),
     "b8": Piece("b8", 0, "N"),
@@ -194,9 +296,9 @@ board = {
     "h1": Piece("h1", 1, "R")
 }
 
-
-
-
+king = board["e8"]
+king.moveToChess("c5", board)
+print(king.isLegalMove("b7", board))
 
 
 
