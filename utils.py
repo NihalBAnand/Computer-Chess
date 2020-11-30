@@ -28,6 +28,7 @@ class Piece:
         board[self.posToChess()] = self
     
     def isLegalMove(self, pos, board):
+        #X, Y refers to the coordinates of the proposed position
         x = alphas.index(pos[0])
         y = (int(pos[1]))
         if self.unit == "R":
@@ -98,7 +99,22 @@ class Piece:
                             if board[j + str(i)].color == self.color:
                                 fine = False
                 return fine
-
+        if self.unit == "N":
+            if (x >= 8 or x < 0) or (y >= 8 or y < 0):
+                return False
+            elif abs(x - self.position[0]) > 2 or abs((8-y) - (self.position[1])) > 2:
+                return False
+            elif abs(x - self.position[0]) == 0 or abs((8-y) - (self.position[1])) == 0:
+                return False
+            elif (isinstance(board[pos], Piece) and board[pos].color != self.color) or board[pos] == None:
+                if abs(x - self.position[0]) == 2 and abs((8-y) - (self.position[1])) == 1:
+                    return True
+                elif abs(x - self.position[0]) == 1 and abs((8-y) - (self.position[1])) == 2:
+                    return True
+                else:
+                    return False
+            else:
+                return False
 
             
 
@@ -178,9 +194,6 @@ board = {
     "h1": Piece("h1", 1, "R")
 }
 
-bishop = board["c8"]
-bishop.moveToChess("d4", board)
-print(bishop.isLegalMove("h8", board))
 
 
 
