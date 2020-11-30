@@ -8,6 +8,7 @@ class Piece:
         self.position = [x, y]
         self.color = color
         self.unit = unit
+        self.hasMoved = False
     
     def posToChess(self):
         string = ""
@@ -18,6 +19,7 @@ class Piece:
     def moveTo(self, x, y):
         self.position[0] = x
         self.position[1] = y
+        self.hasMoved = True
     
     def moveToChess(self, pos, board):
         x = alphas.index(pos[0])
@@ -222,24 +224,70 @@ class Piece:
                 return True
             else:
                 return False
-board = {
-    "a8": Piece("a8", 0, "R"),
-    "b8": Piece("b8", 0, "N"),
-    "c8": Piece("c8", 0, "B"),
-    "d8": Piece("d8", 0, "Q"),
-    "e8": Piece("e8", 0, "K"),
-    "f8": Piece("f8", 0, "B"),
-    "g8": Piece("g8", 0, "N"),
-    "h8": Piece("h8", 0, "R"),
+        if self.unit == "P":
+            if self.color < 0 and y < (8 - self.position[1]):
+                if (x >= 8 or x < 0) or (y >= 8 or y < 0):
+                    return False
+                elif not (abs((8-y) - self.position[1]) == 1 or abs((8-y) - self.position[1]) == 2):
+                    return False
+                elif isinstance(board[pos], Piece) and abs(x - self.position[0]) == 1 and board[pos].color != self.color:
+                    return True
+                elif isinstance(board[pos], Piece) and abs(x - self.position[0]) == 0:
+                    return False
+                elif abs(x - self.position[0]) != 0:
+                    return False
+                elif abs((8-y) - self.position[1]) == 2 and self.hasMoved:
+                    return False
+                elif abs((8-y) - self.position[1]) == 2 and (not self.hasMoved):
+                    return True
+                elif abs((8-y) - self.position[1]) == 1:
+                    return True
+                else:
+                    return False
+            if self.color > 0 and y > (8 - self.position[1]):
+                if (x >= 8 or x < 0) or (y >= 8 or y < 0):
+                    return False
+                elif not (abs((8-y) - self.position[1]) == 1 or abs((8-y) - self.position[1]) == 2):
+                    return False
+                elif isinstance(board[pos], Piece) and abs(x - self.position[0]) == 1 and board[pos].color != self.color:
+                    print("test")
+                    return True
+                elif isinstance(board[pos], Piece) and abs(x - self.position[0]) == 1:
+                    return False
+                elif isinstance(board[pos], Piece) and abs(x - self.position[0]) == 0:
+                    return False
+                elif abs(x - self.position[0]) != 0:
+                    return False
+                elif abs((8-y) - self.position[1]) == 2 and self.hasMoved:
+                    return False
+                elif abs((8-y) - self.position[1]) == 2 and (not self.hasMoved):
+                    print("test")
+                    return True
+                elif abs((8-y) - self.position[1]) == 1:
+                    print("test")
+                    return True
+                else:
+                    return False
 
-    "a7": Piece("a7", 0, "P"),
-    "b7": Piece("b7", 0, "P"),
-    "c7": Piece("c7", 0, "P"),
-    "d7": Piece("d7", 0, "P"),
-    "e7": Piece("e7", 0, "P"),
-    "f7": Piece("f7", 0, "P"),
-    "g7": Piece("g7", 0, "P"),
-    "h7": Piece("h7", 0, "P"),
+
+board = {
+    "a8": Piece("a8", -1, "R"),
+    "b8": Piece("b8", -1, "N"),
+    "c8": Piece("c8", -1, "B"),
+    "d8": Piece("d8", -1, "Q"),
+    "e8": Piece("e8", -1, "K"),
+    "f8": Piece("f8", -1, "B"),
+    "g8": Piece("g8", -1, "N"),
+    "h8": Piece("h8", -1, "R"),
+
+    "a7": Piece("a7", -1, "P"),
+    "b7": Piece("b7", -1, "P"),
+    "c7": Piece("c7", -1, "P"),
+    "d7": Piece("d7", -1, "P"),
+    "e7": Piece("e7", -1, "P"),
+    "f7": Piece("f7", -1, "P"),
+    "g7": Piece("g7", -1, "P"),
+    "h7": Piece("h7", -1, "P"),
 
     "a6": None,
     "b6": None,
@@ -296,9 +344,8 @@ board = {
     "h1": Piece("h1", 1, "R")
 }
 
-king = board["e8"]
-king.moveToChess("c5", board)
-print(king.isLegalMove("b7", board))
-
+pawn = board["a7"]
+board["b7"].moveToChess("a6", board)
+print(pawn.isLegalMove("a6", board))
 
 
