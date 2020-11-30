@@ -250,7 +250,6 @@ class Piece:
                 elif not (abs((8-y) - self.position[1]) == 1 or abs((8-y) - self.position[1]) == 2):
                     return False
                 elif isinstance(board[pos], Piece) and abs(x - self.position[0]) == 1 and board[pos].color != self.color:
-                    print("test")
                     return True
                 elif isinstance(board[pos], Piece) and abs(x - self.position[0]) == 1:
                     return False
@@ -261,10 +260,8 @@ class Piece:
                 elif abs((8-y) - self.position[1]) == 2 and self.hasMoved:
                     return False
                 elif abs((8-y) - self.position[1]) == 2 and (not self.hasMoved):
-                    print("test")
                     return True
                 elif abs((8-y) - self.position[1]) == 1:
-                    print("test")
                     return True
                 else:
                     return False
