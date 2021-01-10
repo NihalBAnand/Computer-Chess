@@ -136,6 +136,7 @@ while not board.is_game_over():
         #finalizes move
         print("My move in UCI notation: " + str(move))
         board.push_uci(str(move))
+
     else:
         while True:
             try:
