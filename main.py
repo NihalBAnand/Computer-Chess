@@ -18,7 +18,7 @@ while True:
     else:
         print("Please input a valid response.")
 
-while not board.is_checkmate() and not board.is_stalemate():
+while not board.is_game_over():
     if color == board.turn:
         #sets up simulated board
         sim_board = board.copy()
@@ -27,7 +27,6 @@ while not board.is_checkmate() and not board.is_stalemate():
         #variable initialization
         white_position = 0
         black_position = 0
-        move = None
         
         #determines current point totals for each side
         for piece in board.pieces(chess.PAWN, chess.WHITE):
@@ -59,7 +58,7 @@ while not board.is_checkmate() and not board.is_stalemate():
         print("WP: " + str(white_position) + " BP: " + str(black_position)) #debug print statement
 
         #sets max difference to minimum so that the algo works
-        max_diff = 0
+        max_diff = -9999999
 
         #gets current point difference to compare against later
         if color == chess.WHITE:
@@ -77,6 +76,14 @@ while not board.is_checkmate() and not board.is_stalemate():
             #resets point positions to where they are currently
             white_position = current_white
             black_position = current_black
+
+            #adds points for checking
+            if color == chess.WHITE:
+                if sim_board.gives_check(sim_move):
+                    white_position += 100
+            else:
+                if sim_board.gives_check(sim_move):
+                    black_position += 100
 
             #calculates new board positions based on simulated move
             sim_board.push_uci(str(sim_move))
@@ -105,7 +112,7 @@ while not board.is_checkmate() and not board.is_stalemate():
                 black_position += 90
             for piece in sim_board.pieces(chess.KING, chess.BLACK):
                 black_position += 900
-
+            
             #determines new difference in point totals
             if color == chess.WHITE:
                 diff = white_position - black_position
@@ -123,7 +130,8 @@ while not board.is_checkmate() and not board.is_stalemate():
         #if we can't get a move that changes the point total, just do a random move
         legal_moves = list(board.legal_moves)
         if max_diff == current_diff:
-            move = legal_moves[randint(0, len(legal_moves))]
+            rand_val = randint(0, len(legal_moves) - 1)
+            move = legal_moves[rand_val]
 
         #finalizes move
         print("My move in UCI notation: " + str(move))
