@@ -28,6 +28,9 @@ class Piece:
         self.moveTo(x, y)
         
         board[self.posToChess()] = self
+
+        if self.unit == "P" and (self.posToChess()[1] == 8 or self.posToChess()[1] == 0):
+            self.unit == "Q"
     
     def isLegalMove(self, pos, board):
         #X, Y refers to the coordinates of the proposed position
@@ -94,24 +97,26 @@ class Piece:
                 fine = True
                 
                 
-                if y > 8 - self.position[1]:
+                if y > self.position[1]:
                     x = abs(x - self.position[0])
-                    for i in range(8 - self.position[1], y+ 1):
+                    for i in range(8 - self.position[1], y):
                         j = alphas[8-i]
                         if isinstance(board[j + str(i)], Piece):
-                            if board[j + str(i)].color == self.color:
+                            if board[j + str(i)].color == self.color and board[j + str(i)] != self:
+                                
                                 fine = False
                             elif board[j + str(i)] != board[pos]:
-                                    fine = False
+                                fine = False
                 else:
                     x = abs(x - self.position[0])
-                    for i in range(y, self.position[1]):
+                    for i in range(y, 8 - self.position[1]):
                         j = alphas[i]
                         if isinstance(board[j + str(i)], Piece):
-                            if board[j + str(i)].color == self.color:
+                            if board[j + str(i)].color == self.color and board[j + str(i)] != self:
+                                print(j, i)
                                 fine = False
                             elif board[j + str(i)] != board[pos]:
-                                    fine = False
+                                fine = False
                 return fine
         if self.unit == "N":
             if (x >= 8 or x < 0) or (y >= 8 or y < 0):
@@ -135,11 +140,15 @@ class Piece:
             elif x == self.position[0] and y == 8 - self.position[1]:
                 return False
             elif x != self.position[0] and y != 8 -self.position[1]:
+                
                 if x == self.position[0] or y == 8 - self.position[1]:
+                    
                     return False
                 elif (x >= 8 or x < 0) or (y >= 8 or y < 0):
+                    
                     return False
                 elif abs(x - self.position[0]) != abs(y - (8-self.position[1])):
+                    
                     return False
                 else:
                     fine = True
@@ -147,10 +156,10 @@ class Piece:
                     
                     if y > 8 - self.position[1]:
                         x = abs(x - self.position[0])
-                        for i in range(8 - self.position[1], y+ 1):
+                        for i in range(self.position[1], y+ 1):
                             j = alphas[8-i]
                             if isinstance(board[j + str(i)], Piece):
-                                if board[j + str(i)].color == self.color:
+                                if board[j + str(i)].color == self.color and board[j + str(i)] != self:
                                     fine = False
                                 elif board[j + str(i)] != board[pos]:
                                     fine = False
@@ -159,7 +168,7 @@ class Piece:
                         for i in range(y, self.position[1]):
                             j = alphas[i]
                             if isinstance(board[j + str(i)], Piece):
-                                if board[j + str(i)].color == self.color:
+                                if board[j + str(i)].color == self.color and board[j + str(i)] != self:
                                     fine = False
                                 elif board[j + str(i)] != board[pos]:
                                     fine = False
@@ -171,7 +180,7 @@ class Piece:
                         for i in range(self.position[0], x):
                             j = alphas[i]
                             if type(board[j + str(8 - self.position[1])]) != None:
-                                if board[j + str(8 - self.position[1])].color == self.color:
+                                if board[j + str(8 - self.position[1])].color == self.color and board[j + str(i)] != self:
                                     fine = False
                                 elif board[j + str(8 - self.position[1])] != board[pos]:
                                     fine = False
@@ -181,21 +190,17 @@ class Piece:
                         for i in range(x, self.position[0]):
                             j = alphas[i]
                             if type(board[j + str(8 - self.position[1])]) != None:
-                                if board[j + str(8 - self.position[1])].color == self.color:
+                                if board[j + str(8 - self.position[1])].color == self.color and board[j + str(i)] != self:
                                     fine = False
                                 elif board[j + str(8 - self.position[1])] != board[pos]:
                                     fine = False
                         return fine
                 if y != 8 -self.position[1]:
-                    print(y, self.position[1])
                     if y > self.position[1]:
-                        print("h")
                         fine = True
                         for i in range(8 -self.position[1], y):
                             j = alphas[x]
-                            print(j, i)
                             if isinstance(board[j + str(i)], Piece) and board[j + str(i)] != self:
-                                print(board[j + str(i)].posToChess())
                                 if board[j + str(i)].color == self.color:
                                     fine = False
                                 elif board[j + str(i)] != board[pos]:
@@ -266,6 +271,13 @@ class Piece:
                 else:
                     return False
 
+def makeLegalMove(piece, pos, board):
+    if piece.isLegalMove(pos, board):
+        prevPos = piece.posToChess()
+        piece.moveToChess(pos, board)
+        print(board[prevPos])
+    else:
+        print("ILLEGAL MOVE!!!")
 
 board = {
     "a8": Piece("a8", -1, "R"),
@@ -341,8 +353,33 @@ board = {
     "h1": Piece("h1", 1, "R")
 }
 
-pawn = board["a7"]
-board["b7"].moveToChess("a6", board)
-print(pawn.isLegalMove("a6", board))
 
+turn = 0
 
+while True:
+    if turn == 0:
+        print("White's piece to move:")
+        piece = input(">")
+        if piece == "STOP":
+            break
+        print("White's destination to move:")
+        move = input(">")
+        makeLegalMove(board[piece], move, board)
+        turn = 1
+    if turn == 1:
+        print("Black's piece to move:")
+        piece = input(">")
+        print("Black's destination to move:")
+        move = input(">")
+        makeLegalMove(board[piece], move, board)
+        turn = 0
+
+for key, value in board.items():
+    if isinstance(value, Piece):
+        print(key, ' : ', value)
+'''
+queen = board["d1"]
+#queen.moveToChess("d5", board)
+board["e2"].moveToChess("e4", board)
+print(queen.isLegalMove("e2", board))
+'''
